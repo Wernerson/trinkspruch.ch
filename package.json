@@ -8,7 +8,8 @@
     "start:dev": "nodemon server.js"
   },
   "dependencies": {
-    "express": "^4.16.1"
+    "express": "^4.16.1",
+    "pug": "^2.0.3"
   },
   "devDependencies": {
     "nodemon": "^1.18.11"
