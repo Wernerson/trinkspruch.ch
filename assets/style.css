@@ -6,6 +6,7 @@ body {
     flex-direction: column;
     margin: 0;
     background: url("/background.jpg") repeat-x;
+    background-size: cover;
 }
 
 header {
@@ -24,7 +25,7 @@ article h2 {
     font-size: 1.75rem;
 }
 
-.next {
+.button {
 	-moz-box-shadow: 0px 1px 0px 0px #fff6af;
 	-webkit-box-shadow: 0px 1px 0px 0px #fff6af;
 	box-shadow: 0px 1px 0px 0px #fff6af;
@@ -36,9 +37,6 @@ article h2 {
 	background:linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffec64', endColorstr='#ffab23',GradientType=0);
 	background-color:#ffec64;
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
 	border:1px solid #ffaa22;
 	display:inline-block;
 	cursor:pointer;
@@ -52,7 +50,7 @@ article h2 {
     outline: none;
 }
 
-.next:hover {
+.button:hover {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffab23), color-stop(1, #ffec64));
 	background:-moz-linear-gradient(top, #ffab23 5%, #ffec64 100%);
 	background:-webkit-linear-gradient(top, #ffab23 5%, #ffec64 100%);
@@ -63,7 +61,22 @@ article h2 {
 	background-color:#ffab23;
 }
 
-.next:active {
+.button:active {
 	position:relative;
 	top:1px;
+}
+
+.add {
+    margin-top: 5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add textarea {
+    width: 50%;
+}
+
+.add .button {
+    margin-top: 0.5em;
 }

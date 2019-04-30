@@ -7,4 +7,8 @@ html
         h1="trinkspruch.ch"
     article
         h2=toast
-        a.next(href="/")="Und no eis!"
+        a.button(href="/")="Und no eis!"
+        form(method="POST", action="/add").add
+            h3="Füeg din eigne Spruch hinzue:"
+            textarea(name="toast", cols="30", rows="10")
+            button(type="submit").button="Hit me!"
