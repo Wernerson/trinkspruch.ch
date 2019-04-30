@@ -16,8 +16,10 @@ const getToast = () => {
 
 const addToast = toast => {
   const toasts = JSON.parse(fs.readFileSync("./toasts.json", "utf8"));
+  for(let t of toasts) {
+    if (toast.trim() == t.trim()) return;
+  }
   toasts.push(toast);
-  console.log(toasts);
   fs.writeFileSync("./toasts.json", JSON.stringify(toasts));
 }
 
