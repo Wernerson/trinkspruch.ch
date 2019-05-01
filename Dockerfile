@@ -1,5 +1,8 @@
 FROM node:8-alpine
 
+#Add curl for Healthcheck
+RUN apk add --update curl && rm -rf /var/cache/apk/*
+
 # Create app directory
 WORKDIR /usr/src/app
 

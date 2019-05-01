@@ -7,3 +7,9 @@ services:
     volumes:
       - "${PWD}/toasts.json:/usr/src/app/toasts.json:rw"
     restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 1m
+      timeout: 2s
+      retries: 3
+      start_period: 5s
