@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  trinkspruch:
+    build: .
+    ports:
+      - "8002:8080"
+    volumes:
+      - "${PWD}/toasts.json:/usr/src/app/toasts.json:rw"
+    restart: always
