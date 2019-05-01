@@ -6,7 +6,12 @@ const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 
 // Database
-const db = new sqlite3.Database("./trinkspruch.sqlite");
+const db = new sqlite3.Database("./trinkspruch.sqlite", err => {
+  if (err) {
+    return console.error(err);
+  }
+  console.log("E Datebankverbindig isch hergstellt worde.")
+});
 db.run("CREATE TABLE IF NOT EXISTS toasts(id INTEGER PRIMARY KEY AUTOINCREMENT, toast TEXT, votes INTEGER DEFAULT 0)")
 
 // Constants
@@ -37,7 +42,7 @@ const addToast = toast => {
   const sql = "INSERT INTO toasts(toast) VALUES (?)";
   db.run(sql, toast, err => {
     if(err) {
-      console.error(err);
+      return console.error(err);
     }
   });
 }
@@ -50,13 +55,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "pug");
 
 app.post("/add", (req, res) => {
-  addToast(req.body.toast);
-  res.render("index", {toast: req.body.toast});
+  const toast = req.body.toast;
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log(`En neue Trinkspruch "${toast}" vom "${ip}" wird ufgnoh.`)
+  addToast(toast);
+  res.render("index", {toast: toast});
 });
 
 app.get("*", (req, res) => {
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log(`En Trinkspruch für de ${ip} wird gsuecht.`)
   getToast(res);
 });
 
 app.listen(PORT, HOST);
-console.log(`Running on http://${HOST}:${PORT}`);
+console.log("Trinksprüch werded ab ez bereitgstellt.");
