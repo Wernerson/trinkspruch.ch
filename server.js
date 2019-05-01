@@ -3,24 +3,43 @@
 const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
+const sqlite3 = require("sqlite3").verbose();
+
+// Database
+const db = new sqlite3.Database("./trinkspruch.sqlite");
+db.run("CREATE TABLE IF NOT EXISTS toasts(id INTEGER PRIMARY KEY AUTOINCREMENT, toast TEXT, votes INTEGER DEFAULT 0)")
 
 // Constants
 const PORT = 8080;
 const HOST = "0.0.0.0";
 
-const getToast = () => {
-  const toasts = JSON.parse(fs.readFileSync("./toasts.json", "utf8"));
-  const index = Math.round(Math.random() * (toasts.length-1));
-  return toasts[index];
+// Logic
+const getToast = res => {
+  const sql = "SELECT DISTINCT toast, votes FROM toasts";
+  db.all(sql, [], (err, rows) => {
+    let toast = "Leider kein Spruch für dich gfunde ¯\_(ツ)_/¯"
+    
+    if (err) {
+      console.error(err);
+    } else {
+      if (rows.length > 0) {
+        let result = rows[Math.round(Math.random() * (rows.length-1))];
+        toast = result.toast;
+      }
+    }
+
+    res.render("index", {toast: toast});
+  });
+  
 }
 
 const addToast = toast => {
-  const toasts = JSON.parse(fs.readFileSync("./toasts.json", "utf8"));
-  for(let t of toasts) {
-    if (toast.trim() == t.trim()) return;
-  }
-  toasts.push(toast);
-  fs.writeFileSync("./toasts.json", JSON.stringify(toasts));
+  const sql = "INSERT INTO toasts(toast) VALUES (?)";
+  db.run(sql, toast, err => {
+    if(err) {
+      console.error(err);
+    }
+  });
 }
 
 // App
@@ -32,11 +51,11 @@ app.set("view engine", "pug");
 
 app.post("/add", (req, res) => {
   addToast(req.body.toast);
-  res.render("index", {toast: getToast()});
+  res.render("index", {toast: req.body.toast});
 });
 
 app.get("*", (req, res) => {
-  res.render("index", {toast: getToast()});
+  getToast(res);
 });
 
 app.listen(PORT, HOST);
