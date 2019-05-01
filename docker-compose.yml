@@ -5,7 +5,7 @@ services:
     ports:
       - "8002:8080"
     volumes:
-      - "${PWD}/toasts.json:/usr/src/app/toasts.json:rw"
+      - "${PWD}/trinkspruch.sqlite:/usr/src/app/trinkspruch.sqlite:rw"
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080"]
