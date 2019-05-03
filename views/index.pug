@@ -6,7 +6,12 @@ html
     header
         h1="trinkspruch.ch"
     article
-        h2=toast
+        if toast
+          h2=toast.toast + " mit " + toast.votes + " votes"
+            a(href="/vote/" + toast.id, title="Isch geil!")
+              img.vote(src="/vote.png")
+        else
+          h2="Han leider kein Spruch für dich gfunde ¯\\_(ツ)_/¯"
         a.button(href="/")="Und no eis!"
         form(method="POST", action="/add").add
             h3="Füeg din eigne Spruch hinzue:"

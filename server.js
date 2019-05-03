@@ -20,16 +20,16 @@ const HOST = "0.0.0.0";
 
 // Logic
 const getToast = res => {
-  const sql = "SELECT DISTINCT toast, votes FROM toasts";
+  const sql = "SELECT DISTINCT id, toast, votes FROM toasts";
   db.all(sql, [], (err, rows) => {
-    let toast = "Leider kein Spruch für dich gfunde ¯\_(ツ)_/¯"
     
+    let toast;
+
     if (err) {
       console.error(err);
     } else {
       if (rows.length > 0) {
-        let result = rows[Math.round(Math.random() * (rows.length-1))];
-        toast = result.toast;
+        toast = rows[Math.round(Math.random() * (rows.length-1))];
       }
     }
 
@@ -38,12 +38,45 @@ const getToast = res => {
   
 }
 
-const addToast = toast => {
-  const sql = "INSERT INTO toasts(toast) VALUES (?)";
-  db.run(sql, toast, err => {
-    if(err) {
-      return console.error(err);
+const getToastById = (id, res) => {
+  const sql = "SELECT DISTINCT id, toast, votes FROM toasts WHERE id = ?";
+  db.all(sql, [id], (err, rows) => {
+    
+    let toast;
+
+    if (err) {
+      console.error(err);
+    } else {
+        toast = rows[0];
     }
+
+    res.render("index", {toast: toast});
+  });
+  
+}
+
+const addToast = (toast, res) => {
+  const sql = "INSERT INTO toasts(toast) VALUES (?)";
+  db.run(sql, toast, function(err){
+    if(err) {
+      console.error(err);
+    }
+    toast = {
+      toast: toast,
+      votes: 0,
+      id: this.lastID
+    };
+    res.render("index", {toast: toast});  
+  });
+}
+
+const vote = (id, res) => {
+  const sql = "UPDATE toasts SET votes = (SELECT votes FROM toasts WHERE id = ?) + 1 WHERE id = ?";
+  db.run(sql, [id, id], function(err){
+    if(err) {
+      console.error(err);
+    }
+    getToastById(id, res);
   });
 }
 
@@ -57,14 +90,18 @@ app.set("view engine", "pug");
 app.post("/add", (req, res) => {
   const toast = req.body.toast;
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  console.log(`En neue Trinkspruch "${toast}" vom "${ip}" wird ufgnoh.`)
-  addToast(toast);
-  res.render("index", {toast: toast});
+  console.log(`En neue Trinkspruch "${toast}" vom ${ip} wird id Sammlig ufgnoh.`)
+  addToast(toast, res);
+});
+
+app.get("/vote/:id", (req, res) => {
+  const id = req.params.id;
+  vote(id, res);
 });
 
 app.get("*", (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  console.log(`En Trinkspruch für de ${ip} wird gsuecht.`)
+  console.log(`En Trinkspruch für de ${ip} wird gsuecht.`);
   getToast(res);
 });
 

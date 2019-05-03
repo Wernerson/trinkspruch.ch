@@ -25,6 +25,10 @@ article h2 {
     font-size: 1.75rem;
 }
 
+.vote {
+	height: 1em;
+}
+
 .button {
 	-moz-box-shadow: 0px 1px 0px 0px #fff6af;
 	-webkit-box-shadow: 0px 1px 0px 0px #fff6af;
